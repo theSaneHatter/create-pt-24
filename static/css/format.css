@@ -1,0 +1,12 @@
+body {
+  color: green;
+  background-color: black;
+}
+
+#first_p {
+  width: 500px;
+  height: 500px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}

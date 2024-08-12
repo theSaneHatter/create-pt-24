@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>Country Guesser Game!</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"> 
+
+
+<style>
+  body {
+    color: green;
+    background-color: black;
+    allign: center;
+    text-align: center;
+  }
+
+  /*
+  #first_p {
+    width: 500px;
+    height: 500px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
+*/
+
+
+  button {
+    color: green;
+    background-color: black;
+    outline: 1px solid white;
+    
+  }
+
+  input {
+    color: green;
+    background-color: black;
+    outline: 1px solid white;
+    
+  }
+</style>
+
+
+</head>
+<body>
+<h1>Hello  User!</h1>
+<h1>Welcome to the Country Guesser Game!</h1>
+<h1>Instructions Below:</h1>
+<pre>
+  Welcome to the Country Guesser Game!
+  In this game, you will be given a random country and you will have to guess what country it is.
+  How to play: To start the game, press the start button. After you press the button, you will be given a hint toward the country you need to guess. 
+  To guess the country, enter your guess in the text box labled "Guess a Country", and press the submit button. 
+  If you guess the country correctly, you will gain a point.
+  If you fail to guess the country, you will be given a hint about what the country is. Then you will guess again. Repeat this process untill you guess the country correctly.
+  Good luck!
+  Hint: all your hints are saved in the hint box...
+</pre>
+<p id='first_p'>--------------------------------</p>
+<p id='secend_p'>This is where the evaluation of your guesses will apper</p>
+<p>--------------------------------</p>
+<button id="start_button">Start</button>
+<p id='start_text'>The Game Has Not Started. Press Start to Begin</p>
+<p></p>
+<button id="guess_button">Guess</button>
+<input id='country_sub_input' type='text' placeholder='Submit Guess'></input>
+<p></p>
+<p>Your Hints Will Appear Under Here:</p>
+<div id='hint_box'>
+
+  
+</div>
+  
+<script>
+  console.log('JS is working!')
+
+  let start_button = document.getElementById('start_button')
+  let guess_button = document.getElementById('guess_button')
+  let country_guess_input = document.getElementById('country_sub_input')
+  let hint_box = document.getElementById('hint_box')
+
+  function update_element(a_element, a_value) {
+    let target_element = document.getElementById(a_element)
+    target_element.innerHTML = (a_value)
+    console.log(`in update_element(), ${a_element} is now ${a_value}`)
+    
+  };
+  function update_guess_element(a_element, a_value) {
+    let target_element = document.getElementById(a_element)
+    target_element.innerHTML = (a_value)
+    console.log(`in update_element(), ${a_element} is now ${a_value}`)
+    
+    hint_box.append(`${a_value};`);
+
+  };
+  
+  function manage_guesses(a_guess) {
+    let targ_message = a_guess['message'];
+    let targ_hint = a_guess['hint'];
+
+    if (targ_hint == 'false'){
+      update_element('secend_p', String(targ_message))
+      alert(targ_message);
+      return
+    }
+    if (targ_hint != 'false'){
+      hint_box.prepend(targ_hint)
+      update_element('secend_p', String(targ_message))
+      
+    }
+    
+  }
+
+  //add listener for guess button 
+  guess_button.addEventListener('click', function() {
+    let a_guess = country_guess_input.value;
+    
+    fetch('/guess_country', {
+      method: 'POST',
+      body: 'value='+a_guess,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+      .then(response => response.text())
+      .then(output =>  update_guess_element('secend_p', output) );
+  });
+
+  //add listener for start button 
+  start_button.addEventListener('click', function() {
+    fetch('/start', {
+      method: 'POST',
+      body: 'value=' + 'start',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+      .then(response => response.text())
+      .then(output =>  update_element('start_text', output) );
+  });
+
+  
+  
+</script>
+</body>
+</html>
